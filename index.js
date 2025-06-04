@@ -1,12 +1,13 @@
 const express = require("express");
 const app = express();
+
 const mongoose = require ("mongoose");
+
 const dotenv = require('dotenv').config();
+
 const { userRouter } = require("./routes/user");
 const { courseRouter } = require("./routes/course");
 const { adminRouter } = require("./routes/admin");
-
-const jwt=require("jsonwebtoken");
 
 app.use(express.json());
 

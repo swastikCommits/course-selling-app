@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-
 const ObjectId = mongoose.Types.ObjectId;
 
 const userSchema = new mongoose.Schema({
@@ -34,7 +33,7 @@ const adminModel=mongoose.model("admin", adminSchema);
 const courseModel=mongoose.model("course", courseSchema);
 const purchaseModel=mongoose.model("purchase", purchaseSchema);
 
-module.export={
+module.exports =  {
     userModel,
     adminModel,
     courseModel,
