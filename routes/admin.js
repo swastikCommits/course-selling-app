@@ -93,16 +93,16 @@ adminRouter.post("/course", adminMiddleware, async (req ,res)=>{
 })
 
 adminRouter.put("/course", (req,res)=>{
-    res.json({
-        msg: "Hello baka!"
-        })
+res.json({
+    msg: "Hello baka!"
+    })
 })
 adminRouter.get("/course/bulk", (req,res)=>{
-    res.json({
-        msg: "Hello baka!"
-        })
+res.json({
+    msg: "Hello baka!"
+    })
 })
 
 module.exports = { 
-    adminRouter : adminRouter
+adminRouter : adminRouter
 };
