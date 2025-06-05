@@ -2,6 +2,8 @@ const { Router } = require("express");
 const zod = require("zod");
 const bcrypt = require("bcrypt");
 const userRouter = Router();
+const jwt=require("jsonwebtoken");
+const JWT_USER_PASSWORD = "swastikSecret";
 const { userModel } = require("../db");
 
 userRouter.post("/signup", async (req, res) => {
@@ -42,7 +44,41 @@ userRouter.post("/signup", async (req, res) => {
     }
 });
 
-userRouter.get("/signin", (req,res)=>{
+userRouter.get("/signin", async (req,res)=>{
+ 
+    const scehma = zod.object({
+        email: zod.string().email(),
+        passwprd: zod.string()
+    })
+    const response = schema.safeParse(req.body);
+    if(!response.success){
+        res.status(411).json({
+            msg: "Incorrect Inputs"
+        })
+    }
+
+    const { email, password } = req.body;
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = await userModel.find({
+        email,
+        password: hashedPassword
+    })
+
+    if(user) {
+        const token = jwt.sign({
+            id: user._id
+        }, JWT_USER_PASSWORD);
+
+
+        res.json({
+            token: token
+        })
+    } else {
+        res.status(403).json({
+            msg: "Incorrect credentials"
+        })
+    }
 
     res.json({
         msg: "Signup successful!"
