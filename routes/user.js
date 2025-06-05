@@ -9,7 +9,7 @@ const { userModel } = require("../db");
 userRouter.post("/signup", async (req, res) => {
     
     const Schema = zod.object({
-        email: zod.string(),
+        email: zod.string().email(),
         password: zod.string(),
         firstName: zod.string(),
         lastName: zod.string()
@@ -44,46 +44,33 @@ userRouter.post("/signup", async (req, res) => {
     }
 });
 
-userRouter.get("/signin", async (req,res)=>{
- 
-    const scehma = zod.object({
+userRouter.get("/signin", async (req, res) => {
+    const Schema = zod.object({
         email: zod.string().email(),
-        passwprd: zod.string()
-    })
-    const response = schema.safeParse(req.body);
-    if(!response.success){
-        res.status(411).json({
-            msg: "Incorrect Inputs"
-        })
+        password: zod.string()
+    });
+
+    const response = Schema.safeParse(req.body);
+    if (!response.success) {
+        return res.status(411).json({ msg: "Incorrect Inputs" });
     }
 
     const { email, password } = req.body;
+    const user = await userModel.findOne({ email });
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await userModel.find({
-        email,
-        password: hashedPassword
-    })
-
-    if(user) {
-        const token = jwt.sign({
-            id: user._id
-        }, JWT_USER_PASSWORD);
-
-
-        res.json({
-            token: token
-        })
-    } else {
-        res.status(403).json({
-            msg: "Incorrect credentials"
-        })
+    if (!user) {
+        return res.status(403).json({ msg: "User not found" });
     }
 
-    res.json({
-        msg: "Signup successful!"
-        })
-})
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    if (!passwordMatch) {
+        return res.status(403).json({ msg: "Incorrect credentials" });
+    }
+
+    const token = jwt.sign({ id: user._id }, JWT_USER_PASSWORD);
+    res.json({ token });
+});
+
 
 
 
