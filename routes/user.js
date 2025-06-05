@@ -3,7 +3,7 @@ const zod = require("zod");
 const bcrypt = require("bcrypt");
 const userRouter = Router();
 const jwt=require("jsonwebtoken");
-const JWT_USER_PASSWORD = "swastikSecret";
+const { JWT_USER_PASSWORD } = require("../config")
 const { userModel } = require("../db");
 
 userRouter.post("/signup", async (req, res) => {
@@ -44,7 +44,7 @@ userRouter.post("/signup", async (req, res) => {
     }
 });
 
-userRouter.get("/signin", async (req, res) => {
+userRouter.post("/signin", async (req, res) => {
     const Schema = zod.object({
         email: zod.string().email(),
         password: zod.string()

@@ -1,13 +1,13 @@
 const jwt = require("jsonwebtoken");
-const { JWT_USER_PASSWORD } = require("../config");
+const { JWT_ADMIN_PASSWORD } = require("../config");
 
 
-const useriddleware = (req, res, next) => {
+const adminMiddleware = (req, res, next) => {
     const token = req.headers.token;
-    const decoded = jwt.verify(token, JWT_USER_PASSWORD);
+    const decoded = jwt.verify(token, JWT_adminM_PASSWORD);
 
     if(decoded){
-        req.userId=decoded.id;
+        req.adminId=decoded.id;
         next();
     } else{
         res.status(403).json({
@@ -18,5 +18,5 @@ const useriddleware = (req, res, next) => {
 }  
 
 module.exports = {
-    useriddleware
+    adminMiddleware
 }

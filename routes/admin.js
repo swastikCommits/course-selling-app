@@ -1,10 +1,11 @@
 const { Router } = require("express");
 const { adminModel } = require("../db");
 const adminRouter = Router();
-const JWT_ADMIN_PASSWORD = "SwastikAdmin";
+const { JWT_ADMIN_PASSWORD } = require("../config")
 const zod = require("zod");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const { adminMiddleware } = require("../middlewares/admin")
 
 
 adminRouter.post("/signup", async (req,res)=>{
@@ -70,7 +71,7 @@ adminRouter.get("/signin", async (req, res) => {
         });
     }
 
-    const passwordMatch = await bcrypt.compare(password, admin.password);
+    const passwordMatch = bcrypt.compare(password, admin.password);
 
     if (!passwordMatch) {
         return res.status(403).json({
@@ -87,7 +88,7 @@ adminRouter.get("/signin", async (req, res) => {
 
 
 
-adminRouter.post("/course", async (req ,res)=>{
+adminRouter.post("/course", adminMiddleware, async (req ,res)=>{
     
 })
 
